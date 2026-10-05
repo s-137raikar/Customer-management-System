@@ -9,6 +9,13 @@ cors:
   allowed-headers: "*"
   exposed-headers: "*"
 
+
+aws:
+  region: ap-south-1
+  s3:
+    buckets:
+      customer:fs-sriganesha-customer-test-901876312393-ap-south-1-an
+
 management:
   endpoints:
     web:

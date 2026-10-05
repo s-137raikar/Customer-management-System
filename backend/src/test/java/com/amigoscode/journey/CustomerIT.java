@@ -84,7 +84,9 @@ public class CustomerIT {
                 gender,
                 age,
                 List.of("ROLE_USER"),
-                email
+                email,
+               null
+
         );
 
         assertThat(allCustomers).contains(expectedCustomer);
@@ -266,7 +268,7 @@ public class CustomerIT {
                 .getResponseBody();
 
         CustomerDTO expected = new CustomerDTO(
-                id, newName, email, gender, age, List.of("ROLE_USER"), email
+                id, newName, email, gender, age, List.of("ROLE_USER"), email, null
         );
 
         assertThat(updatedCustomer).isEqualTo(expected);
