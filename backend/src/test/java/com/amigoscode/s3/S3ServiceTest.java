@@ -1,5 +1,6 @@
 package com.amigoscode.s3;
 
+import java.io.ByteArrayInputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -71,29 +73,54 @@ class S3ServiceTest {
 
     }
 
-    @Test
-    void canGetObject() throws IOException {
-        // Given
-        String bucket = "customer";
-        String key = "foo";
-        byte[] data = "Hello World".getBytes();
+//    @Test
+//    void canGetObject() throws IOException {
+//        // Given
+//        String bucket = "customer";
+//        String key = "foo";
+//        byte[] data = "Hello World".getBytes();
+//
+//        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+//                .bucket(bucket)
+//                .key(key)
+//                .build();
+////
+////        ResponseInputStream<GetObjectResponse> res = mock(ResponseInputStream.class);
+//        when(res.readAllBytes()).thenReturn(data);
+//
+//        when(s3Client.getObject(eq(getObjectRequest))).thenReturn(res);
+//
+//        // When
+//        byte[] bytes = underTest.getObject(bucket, key);
+//
+//        // Then
+//        assertThat(bytes).isEqualTo(data);
+//    }
 
-        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(bucket)
-                .key(key)
-                .build();
 
-        ResponseInputStream<GetObjectResponse> res = mock(ResponseInputStream.class);
-        when(res.readAllBytes()).thenReturn(data);
+@Test
+void canGetObject() throws IOException {
+    String bucket = "customer";
+    String key = "foo";
+    byte[] data = "Hello World".getBytes();
 
-        when(s3Client.getObject(eq(getObjectRequest))).thenReturn(res);
+    GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+            .bucket(bucket)
+            .key(key)
+            .build();
 
-        // When
-        byte[] bytes = underTest.getObject(bucket, key);
+    ResponseInputStream<GetObjectResponse> res =
+            new ResponseInputStream<>(
+                    GetObjectResponse.builder().build(),
+                    new ByteArrayInputStream(data)
+            );
 
-        // Then
-        assertThat(bytes).isEqualTo(data);
-    }
+    when(s3Client.getObject(eq(getObjectRequest))).thenReturn(res);
+
+    byte[] bytes = underTest.getObject(bucket, key);
+
+    assertThat(bytes).isEqualTo(data);
+}
 
     @Test
     void willThrowWhenGetObject() throws IOException {
@@ -106,10 +133,22 @@ class S3ServiceTest {
                 .bucket(bucket)
                 .key(key)
                 .build();
+//
+//        ResponseInputStream<GetObjectResponse> res = mock(ResponseInputStream.class);
+//        when(res.readAllBytes()).thenThrow(new IOException("Cannot read bytes"));
 
-        ResponseInputStream<GetObjectResponse> res = mock(ResponseInputStream.class);
-        when(res.readAllBytes()).thenThrow(new IOException("Cannot read bytes"));
+        InputStream inputStream = new InputStream() {
+            @Override
+            public int read() throws IOException {
+                throw new IOException("Cannot read bytes");
+            }
+        };
 
+        ResponseInputStream<GetObjectResponse> res =
+                new ResponseInputStream<>(
+                        GetObjectResponse.builder().build(),
+                        inputStream
+                );
         when(s3Client.getObject(eq(getObjectRequest))).thenReturn(res);
 
         // When

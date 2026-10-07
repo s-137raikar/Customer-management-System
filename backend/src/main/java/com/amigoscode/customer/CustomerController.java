@@ -38,6 +38,7 @@ public class CustomerController {
             @RequestBody CustomerRegistrationRequest request) {
         customerService.addCustomer(request);
         String jwtToken = jwtUtil.issueToken(request.email(), "ROLE_USER");
+        System.out.println(jwtToken);
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, jwtToken)
                 .build();
@@ -59,13 +60,14 @@ public class CustomerController {
     @PostMapping(value = "{customerId}/profile-image",
                 consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void uploadCustomerProfilePicture(@PathVariable("customerId") Integer customerId,
-                                             @PathVariable("file")MultipartFile file) {
+                                             @RequestParam("file") MultipartFile file) {
 
         customerService.uploadCustomerProfileImage(customerId , file);
 
     }
 
-    @GetMapping("{customerId}/profile-image"
+    @GetMapping(value = "{customerId}/profile-image",
+            produces = MediaType.IMAGE_JPEG_VALUE
             )
     public byte[] getCustomerProfileImage(@PathVariable("customerId") Integer customerId
                                              ) {

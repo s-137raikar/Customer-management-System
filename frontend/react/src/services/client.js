@@ -61,3 +61,12 @@ export const login = async (usernameAndPassword) => {
         throw e;
     }
 }
+export const uploadCustomerProfilePicture = async (id, formData) => {
+    return axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/customers/${id}/profile-image`,
+        formData,
+        getAuthConfig()
+    );
+};
+export const customerProfilePictureUrl = (id) =>
+    `${import.meta.env.VITE_API_BASE_URL}/api/v1/customers/${id}/profile-image`;

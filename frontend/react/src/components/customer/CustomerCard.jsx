@@ -19,8 +19,10 @@ import {useRef} from 'react'
 import {deleteCustomer} from "../../services/client.js";
 import {errorNotification, successNotification} from "../../services/notification.js";
 import UpdateCustomerDrawer from "./UpdateCustomerDrawer.jsx";
-
-export default function CardWithImage({id, name, email, age, gender, imageNumber, fetchCustomers}) {
+import {
+    customerProfilePictureUrl
+} from "../../services/client.js";
+export default function CardWithImage({id, name, email, age, gender, imageNumber, profileImageId, fetchCustomers}) {
     const randomUserGender = gender === "MALE" ? "men" : "women";
 
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -41,7 +43,9 @@ export default function CardWithImage({id, name, email, age, gender, imageNumber
                     h={'120px'}
                     w={'full'}
                     src={
-                        'https://images.unsplash.com/photo-1612865547334-09cb8cb455da?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
+                        profileImageId
+                            ? `${customerProfilePictureUrl(id)}?v=${profileImageId}`
+                            : `https://randomuser.me/api/portraits/${randomUserGender}/${imageNumber}.jpg`
                     }
                     objectFit={'cover'}
                 />
