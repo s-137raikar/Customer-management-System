@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "dropzone": "^6.3.5",
+    "react": "^19.3.0",
+    "react-dropzone": "^20.1.2"
+  }
+}
