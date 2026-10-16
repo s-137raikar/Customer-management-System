@@ -43,9 +43,7 @@ export default function CardWithImage({id, name, email, age, gender, imageNumber
                     h={'120px'}
                     w={'full'}
                     src={
-                        profileImageId
-                            ? `${customerProfilePictureUrl(id)}?v=${profileImageId}`
-                            : `https://randomuser.me/api/portraits/${randomUserGender}/${imageNumber}.jpg`
+                        'https://images.unsplash.com/photo-1612865547334-09cb8cb455da?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
                     }
                     objectFit={'cover'}
                 />
@@ -53,7 +51,9 @@ export default function CardWithImage({id, name, email, age, gender, imageNumber
                     <Avatar
                         size={'xl'}
                         src={
-                            `https://randomuser.me/api/portraits/${randomUserGender}/${imageNumber}.jpg`
+                            profileImageId
+                                ? `${customerProfilePictureUrl(id)}?v=${profileImageId}`
+                                : `https://randomuser.me/api/portraits/${randomUserGender}/${imageNumber}.jpg`
                         }
                         alt={'Author'}
                         css={{
@@ -78,6 +78,7 @@ export default function CardWithImage({id, name, email, age, gender, imageNumber
                             initialValues={{ name, email, age }}
                             customerId={id}
                             fetchCustomers={fetchCustomers}
+                            profileImageId={profileImageId}
                         />
                     </Stack>
                     <Stack>
